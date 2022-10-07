@@ -1,29 +1,34 @@
-import React, { useState } from 'react';
-import { CheckBox, Text, View, TouchableHighlight, TextInput } from 'react-native';
-import { WebView } from 'react-native-webview';
+import React, { useState } from "react";
+import { Text, View, TouchableHighlight, TextInput } from "react-native";
+import Checkbox from "expo-checkbox";
+import { WebView } from "react-native-webview";
 
-import Xendit from 'xendit-js-node';
+import Xendit from "xendit-js-node";
 
-import styles from './styles';
+import styles from "./styles";
 
 export default function App() {
-  const [amount, setAmount] = useState('70000')
-  const [cardNumber, setCardNumber] = useState('4000000000000002')
-  const [cardExpMonth, setCardExpMonth] = useState('12')
-  const [cardExpYear, setCardExpYear] = useState(String(new Date().getFullYear() + 1))
-  const [cardCvn, setCardCvn] = useState('123')
-  const [isMultipleUse, setIsMultipleUse] = useState(false)
-  const [isSkip3DS, setIsSkip3DS] = useState(false)
-  const [isTokenizing, setIsTokenizing] = useState(false)
-  const [isRenderWebview, setIsRenderWebview] = useState(false)
-  const [webviewUrl, setWebviewUrl] = useState('')
-  const [authenticationId, setAuthenticationId] = useState('')
+  const [amount, setAmount] = useState("70000");
+  const [cardNumber, setCardNumber] = useState("4000000000000002");
+  const [cardExpMonth, setCardExpMonth] = useState("12");
+  const [cardExpYear, setCardExpYear] = useState(
+    String(new Date().getFullYear() + 1)
+  );
+  const [cardCvn, setCardCvn] = useState("123");
+  const [isMultipleUse, setIsMultipleUse] = useState(false);
+  const [isSkip3DS, setIsSkip3DS] = useState(false);
+  const [isTokenizing, setIsTokenizing] = useState(false);
+  const [isRenderWebview, setIsRenderWebview] = useState(false);
+  const [webviewUrl, setWebviewUrl] = useState("");
+  const [authenticationId, setAuthenticationId] = useState("");
 
   function tokenize() {
     setIsTokenizing(true);
 
     const tokenData = getTokenData();
-    Xendit.setPublishableKey('xnd_public_development_OYqIfOUth+GowsY6LeJOHzLCZtSj84J9kXDn+Rxj/mbf/LCoCQdxgA==');
+    Xendit.setPublishableKey(
+      "xnd_public_development_OYqIfOUth+GowsY6LeJOHzLCZtSj84J9kXDn+Rxj/mbf/LCoCQdxgA=="
+    );
 
     Xendit.card.createToken(tokenData, _tokenResponseHandler);
   }
@@ -33,6 +38,7 @@ export default function App() {
 
     setIsRenderWebview(false);
     alert(JSON.stringify(data));
+    console.log(data);
   }
 
   function getTokenData() {
@@ -43,7 +49,7 @@ export default function App() {
       card_exp_year: cardExpYear,
       card_cvn: cardCvn,
       is_multiple_use: isMultipleUse,
-      should_authenticate: !isSkip3DS
+      should_authenticate: !isSkip3DS,
     };
   }
 
@@ -54,21 +60,21 @@ export default function App() {
 
       return;
     }
-    
+
     switch (token.status) {
-      case 'APPROVED':
-      case 'VERIFIED':
-      case 'FAILED':
-        alert(JSON.stringify(token))
+      case "APPROVED":
+      case "VERIFIED":
+      case "FAILED":
+        alert(JSON.stringify(token));
         break;
-      case 'IN_REVIEW':
-        setAuthenticationId(token.authentication_id)
-        setWebviewUrl(token.payer_authentication_url)
-        setIsRenderWebview(true)
+      case "IN_REVIEW":
+        setAuthenticationId(token.authentication_id);
+        setWebviewUrl(token.payer_authentication_url);
+        setIsRenderWebview(true);
 
         break;
       default:
-        alert('Unknown token status');
+        alert("Unknown token status");
         break;
     }
 
@@ -93,11 +99,11 @@ export default function App() {
   if (isRenderWebview) {
     return (
       <WebView
-        source={{uri: webviewUrl}}
+        source={{ uri: webviewUrl }}
         onMessage={onMessage}
         injectedJavaScript={INJECTED_JAVASCRIPT}
       />
-    )
+    );
   }
 
   return (
@@ -106,8 +112,8 @@ export default function App() {
         style={styles.textInput}
         placeholder="Amount"
         defaultValue={amount}
-        onChangeText={text => setAmount(text)}
-        keyboardType={'numeric'}
+        onChangeText={(text) => setAmount(text)}
+        keyboardType={"numeric"}
       />
 
       <TextInput
@@ -115,9 +121,9 @@ export default function App() {
         placeholder="Card Number"
         maxLength={16}
         defaultValue={cardNumber}
-        onChangeText={text => setCardNumber(text)}
+        onChangeText={(text) => setCardNumber(text)}
         keyboard
-        Type={'numeric'}
+        Type={"numeric"}
       />
 
       <View style={styles.secondaryTextContainer}>
@@ -126,38 +132,38 @@ export default function App() {
           maxLength={2}
           style={styles.secondaryTextInput}
           defaultValue={cardExpMonth}
-          onChangeText={text => setCardExpMonth(text)}
-          keyboardType={'numeric'}
+          onChangeText={(text) => setCardExpMonth(text)}
+          keyboardType={"numeric"}
         />
         <TextInput
           placeholder="Exp Year"
           maxLength={4}
           style={styles.secondaryTextInput}
           defaultValue={cardExpYear}
-          onChangeText={text => setCardExpYear(text)}
-          keyboardType={'numeric'}
+          onChangeText={(text) => setCardExpYear(text)}
+          keyboardType={"numeric"}
         />
         <TextInput
           placeholder="CVN"
           maxLength={3}
           style={styles.secondaryTextInput}
           defaultValue={cardCvn}
-          onChangeText={text => setCardCvn(text)}
-          keyboardType={'numeric'}
+          onChangeText={(text) => setCardCvn(text)}
+          keyboardType={"numeric"}
         />
       </View>
 
       <View style={styles.checkBoxContainer}>
-        <CheckBox
+        <Checkbox
           value={isMultipleUse}
-          onValueChange={val => setIsMultipleUse(val)}
+          onValueChange={(val) => setIsMultipleUse(val)}
         />
         <Text style={styles.defaultContent}> Multiple use token? </Text>
       </View>
       <View style={styles.checkBoxContainer}>
-        <CheckBox
+        <Checkbox
           value={isSkip3DS}
-          onValueChange={val => setIsSkip3DS(val)}
+          onValueChange={(val) => setIsSkip3DS(val)}
         />
         <Text style={styles.defaultContent}> Skip authentication? </Text>
       </View>
@@ -167,7 +173,7 @@ export default function App() {
         onPress={tokenize}
         disabled={isTokenizing}
       >
-        <Text style={{color: '#fff'}}>Tokenize</Text>
+        <Text style={{ color: "#fff" }}>Tokenize</Text>
       </TouchableHighlight>
     </View>
   );
