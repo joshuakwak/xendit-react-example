@@ -27,7 +27,7 @@ export default function App() {
 
     const tokenData = getTokenData();
     Xendit.setPublishableKey(
-      "xnd_public_development_OYqIfOUth+GowsY6LeJOHzLCZtSj84J9kXDn+Rxj/mbf/LCoCQdxgA=="
+      "xnd_public_development_jSkXd6n95TUhFXdAE9Mn9mLHBtVwwfMtAZmIcNM6ZqKjPUW3srmjJLT3Ztx6KH"
     );
 
     Xendit.card.createToken(tokenData, _tokenResponseHandler);
